@@ -1,26 +1,41 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useCallback, useState } from 'react';
+import CalculationForm from './components/CalculationForm';
+import IMCTable from './components/IMCTable';
 
-function App() {
+const App: React.FC = () => {
+  const [height, setHeight] = useState<number | undefined>();
+  const [weight, setWeight] = useState<number | undefined>();
+  const [imcResult, setImcResult] = useState<number | undefined>();
+
+  const handleImcCalculation = useCallback(() => {
+    if (height && weight) {
+      const heightMeter = height / 100;
+      const imc = weight / (heightMeter * heightMeter);
+
+      setImcResult(imc);
+    }
+  }, [weight, height]);
+
+  const handleWeightChange = useCallback(event => {
+    setWeight(event.target.value);
+  }, []);
+
+  const handleHeightChange = useCallback(event => {
+    setHeight(event.target.value);
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <CalculationForm
+        height={height}
+        weight={weight}
+        onChangeWeight={handleWeightChange}
+        onChangeHeight={handleHeightChange}
+        calculateImc={handleImcCalculation}
+      />
+      <IMCTable imcResult={imcResult} />
+    </>
   );
-}
+};
 
 export default App;
